@@ -2,11 +2,16 @@
     "name": "@ksw/toolbox",
     "version": "0.0.6",
     "type": "module",
+    "private": false,
     "keywords": [
         "utilities"
     ],
     "author": "Kei Sing Wong",
-    "license": "ISC",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/taichi-master/ksw_toolbox.git"
+    },
     "scripts": {
         "dev": "vite",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
