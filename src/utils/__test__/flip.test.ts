@@ -4,7 +4,7 @@ import { range } from '../range'
 
 describe( 'flip', function () {
 
-  test( 'flip n', function () {
+  test.only( 'flip n', function () {
     const size = 5
 
     range( size ).forEach( function ( i ) {
