@@ -1,13 +1,12 @@
-import typescript from "@rollup/plugin-typescript"  // needs tslib
+import typescript from '@rollup/plugin-typescript' // needs tslib
 import terser from '@rollup/plugin-terser'
+// import { dts } from 'rollup-plugin-dts'
 
 export default [
   {
     input: {
-        'index': 'src/index.ts',
-        'utils/index': 'src/utils/index.ts',
-        'utils/delay': 'src/utils/delay.ts',
-        'utils/hello': 'src/utils/hello.ts'
+      'index': 'src/index.ts',
+      'utils/index': 'src/utils/index.ts'
     },
     output: [
       {
@@ -15,16 +14,18 @@ export default [
         format: 'esm',
         entryFileNames: '[name].js',
         exports: 'auto',
-        plugins: [terser()],
+        plugins: [ terser() ],
         sourcemap: true
       }
     ],
     plugins: [
-            typescript({
-                tsconfig: 'tsconfig.json',
-            })
+      typescript( {
+        exclude: [
         ],
-        external: [
-        ]
-    }
+        tsconfig: 'tsconfig.json'
+      } )
+    ],
+    external: [
+    ]
+  }
 ]

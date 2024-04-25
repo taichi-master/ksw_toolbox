@@ -1,35 +1,73 @@
-import {describe, expect, test} from '@jest/globals'
-import delay from '../delay'
+import { describe, expect, it, vi } from 'vitest'
 
-describe( 'utils', function() {
+//typescript
+// Necessary imports
+import { delay } from '../delay'
 
-    test( 'delay without second parameter', function () {
-        expect.assertions(1) // Ensures that at least one assertion is called
+// Unit tests for the delay function using vi
+describe( 'delay function', () => {
+  vi.useFakeTimers()
 
-        return expect( delay( 0 ) ).resolves.toBe( undefined )
-    })
+  it( 'should resolve with undefined after time ms when no value is provided', () => {
+    const promise = delay( 1000 )
 
-    test( 'delay with a second parameter', function () {
-        expect.assertions(1) // Ensures that at least one assertion is called
+    vi.advanceTimersByTime( 1000 )
+    return expect( promise ).resolves.toBeUndefined()
+  } )
 
-        return expect( delay( 0, 'Done' ) ).resolves.toBe( 'Done' )
-    })
+  it( 'should resolve with a value after time ms when a value is provided', () => {
+    const testValue = 'test'
+    const promise = delay( 500, testValue )
 
-    test( 'delay with a function', function () {
-        expect.assertions(1) // Ensures that at least one assertion is called
+    vi.advanceTimersByTime( 500 )
+    return expect( promise ).resolves.toEqual( testValue )
+  } )
 
-        return expect( delay( 0, () => 'abc' ) ).resolves.toBe( 'abc' )
-    })
+  it( 'should resolve the return value of the function after time ms when a function is provided as value', () => {
+    const returnValue = 'return value'
+    const fn = vi.fn().mockReturnValue( returnValue )
+    const promise = delay( 300, fn )
 
-    test( 'delay with async/await', async function () {
-        expect( await delay( 0, 'abc' )).toBe( 'abc' )
-    })
+    vi.advanceTimersByTime( 300 )
+    expect( fn ).toHaveBeenCalled()
+    return expect( promise ).resolves.toEqual( returnValue )
+  } )
 
-    test( 'delay with then', function ( done ) {
+  it( 'should only resolve after the specified time has elapsed', () => {
+    const promise = delay( 2000, 'delayed' )
 
-        delay( 0, 'abc' ).then( result => {
-            expect( result ).toBe( 'abc' )
-            done()
-        })
-    })
-})
+    vi.advanceTimersByTime( 1999 )
+    const checkPromise = promise.then( () => 'time passed' )
+
+    vi.advanceTimersByTime( 1 )
+    return expect( checkPromise ).resolves.toEqual( 'time passed' )
+  } )
+
+  it( 'should handle zero milliseconds delay', () => {
+    const value = 'instant'
+    const promise = delay( 0, value )
+
+    vi.advanceTimersByTime( 0 )
+    return expect( promise ).resolves.toEqual( value )
+  } )
+
+  it( 'should reject if setTimeout throws an error', () => {
+    const error = new Error( 'Error in setTimeout' )
+
+    vi.spyOn( global, 'setTimeout' ).mockImplementationOnce( () => { throw error } )
+    const promise = delay( 1000 )
+
+    expect( promise ).rejects.toEqual( error )
+    vi.restoreAllMocks()
+  } )
+
+  it( 'should resolve correctly if delay is a negative number', () => {
+    const negativeDelayValue = 'negativeDelay'
+    const promise = delay( -100, negativeDelayValue )
+
+    vi.advanceTimersByTime( 100 )
+    return expect( promise ).resolves.toEqual( negativeDelayValue )
+  } )
+
+} )
+//
