@@ -1,1 +1,6 @@
+export * from './across'
 export * from './delay'
+export * from './flip'
+export * from './range'
+export * from './wrap-around-counter'
+export * from './xor'
